@@ -1,0 +1,100 @@
+---
+title: "SCHS JV vs Chilton County Post Game Analysis"
+date: January 21, 2021
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+library(tidyverse)
+library(ggplot2)
+library(knitr)
+library(lubridate)
+library(forcats)
+```
+
+## Take Aways From Chilton
+  
+  
+**Crash the Boards:** We gave up **11 Offensive Rebounds**. Those second chance points didn't hurt us tonight, but probably will against Clay and Calera.
+
+**Better Preventing Turnovers:** Still not great, but we had less than ususal with **20 Turnovers**. People to note were, Hunter with 4, Keyshawn Grant and Logan with 3.
+
+**Make More Layups:** We missed **10 Layups** as a team. Keyshawn had 3 by himself in the 2nd half. 
+  
+  
+## Looking Forward to Clay
+
+**Find #2:** #2 had 14 points and is really there only major scoring threat. A **Red** call on him every time he touches it will get the ball out of his hands, forcing other guys to step up.
+
+**Close Out Hard:** Clay made **4 Three-Pointers** against us last game. And primarily, there offense is pass it around the arc until you get an open layup or 3-Pointer. Keeping them off balance will be a big help. The shooters are **#2, #3, #4**.
+
+**No Easy Layups:** Clay's second top scorer was **#5** who had 12 points by standing on the block when we didn't rotate fast enough. We need to not let any of those easy buckets up tonight.
+
+
+\newpage  
+# Season Free Throw Stats
+
+**Not Many Changes. Jeremiah went 1/1. That is all.**
+``` {r data1}
+names <- c("Grant", "Keyshawn", "Jonah", "Jay", "Noah", "Alex", "Jeremiah", "Cason", "Hunter", "Kobin", "Logan", "Austin")
+made <-      c(1,14,5,11,21,05,2,1,3,1,07,11)
+attempted <- c(3,31,8,19,33,11,3,7,8,3,19,29)
+JV.Data <- data.frame(Name = names, FTM = made, FTA = attempted)
+
+# Add Team Average as another bar
+Team.Average <- data.frame("SCHS Team Average", sum(made), sum(attempted))
+names(Team.Average) <- c("Name", "FTM", "FTA")
+JV.Data <- rbind(JV.Data, Team.Average)
+
+### Add opposing team to Data Frame
+Opposition.Average <- data.frame("Opposing Team Average", 57, 108) # Opposing Team Data Here
+names(Opposition.Average) <- c("Name", "FTM", "FTA")
+
+# Create FT Percentage
+JV.Data <- JV.Data %>% rbind(Opposition.Average) %>%
+  mutate(FT.PCT = round(FTM / FTA, 2))
+
+JV.Data$Name <- factor(JV.Data$Name, levels = c(names, "SCHS Team Average", "Opposing Team Average"))
+
+```
+
+```{r ftpct.bargraph}
+ggplot(JV.Data, aes(x = Name, y = FT.PCT)) +
+  geom_bar(stat = "identity") +
+  xlab("Player Name") +
+  ylab("FT Percentage") +
+  geom_hline(yintercept = JV.Data[13, "FT.PCT"], color = "red") +
+  geom_hline(yintercept = JV.Data[14, "FT.PCT"], color = "blue") +
+  scale_y_continuous(labels = scales::percent) +
+  geom_label(label = (paste0(JV.Data$FT.PCT * 100, "%"))) +
+  coord_flip()
+
+```
+
+- Our opponents are shooting **`r (JV.Data[14, "FT.PCT"] - JV.Data[13, "FT.PCT"]) * 100`% better** than us from the free throw line.
+
+
+## FT Percentages in Games Since January 1
+Excluding Vincent
+```{r PCT.Increase, out.width = "60%", out.height = "60%"}
+dates <- c(ymd(20210105), ymd(20210108), ymd(20210111), ymd(20210115), ymd(20210118),  ymd(20210121))
+
+ft.pct <- c(10/19, 8/13, 11/17, 2/9, 6/23, 3/9)
+
+pct.data <-data.frame(cbind(dates, ft.pct))
+
+oppo <- c("Syl.", "'Dega", "Syl.", "Clay", "`Dega", "Chilton")
+
+pct.data <- cbind(pct.data, oppo)
+
+ggplot(pct.data, aes(x=dates, y = ft.pct)) +
+  geom_line() +
+  geom_point() +
+  geom_label(label = paste0(oppo, " ", round(ft.pct,2)*100, "%")) +
+  ylab("Team FT Percentage In Each Game") +
+  scale_y_continuous(labels = scales::percent) +
+  theme(axis.title.x=element_blank(),
+        axis.text.x=element_blank(),
+        axis.ticks.x=element_blank())
+```
