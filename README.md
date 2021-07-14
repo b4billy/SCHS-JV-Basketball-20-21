@@ -4,3 +4,4 @@ During the 2020-2021 school year, I was at home in Alabama due to the Coronaviru
 
 In terms of organization of the files, the MidSeason Report occured before all the dated files. The team only competed in a limited number of games during November and December 2020 due to a COVID-19 outbreak on the Varsity team. The season concluded on February 5, 2021. There is only 1 R Markdown document which I typed over to update reports after every game.
 
+test
